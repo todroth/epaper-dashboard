@@ -1,0 +1,30 @@
+# Core dependencies for E-Paper Dashboard
+# Python 3.12+ required
+
+# Image processing
+Pillow>=11.0.0
+
+# HTTP requests for weather/calendar APIs
+requests>=2.32.0
+
+# Date/time handling
+python-dateutil>=2.9.0
+pytz>=2025.2
+babel>=2.14.0
+
+# Sunrise/sunset calculation
+astral>=3.2
+
+# SVG rendering (choose one)
+cairosvg>=2.7.1
+# OR: svglib>=1.5.1 and reportlab>=4.0.0
+
+# Hardware support (only on Raspberry Pi)
+# Uncomment when deploying to Pi:
+# spidev>=3.6
+# gpiozero>=2.0.1
+
+# Optional: Calendar providers
+# icalendar>=6.0.0
+# google-auth>=2.30.0
+# google-api-python-client>=2.140.0
