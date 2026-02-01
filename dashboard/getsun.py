@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 
-from dashboard.provider.sun.model.sundata import SunData
+from dashboard.provider.sun.sundata import SunData
 from dashboard.provider.sun.sunprovider import SunProvider
 from dashboard.utils.files import write_json
 from dashboard.utils.utils import configure_logging, configure_locale

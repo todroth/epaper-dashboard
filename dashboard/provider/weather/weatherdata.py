@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from dashboard.provider.weather.model.weathericon import WeatherIcon
+from dashboard.provider.weather.weathericon import WeatherIcon
 
 @dataclass
 class WeatherData:

@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from dashboard.provider.basedataprovider import BaseDataProvider
-from dashboard.provider.datetime.model.datetimedata import DateTimeData
+from dashboard.provider.datetime.datetimedata import DateTimeData
 
 
 class DateTimeProvider(BaseDataProvider):

@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from dashboard.provider.alert.model.alertdata import AlertData
+from dashboard.provider.alert.alertdata import AlertData
 from dashboard.provider.basedataprovider import BaseDataProvider
 
 

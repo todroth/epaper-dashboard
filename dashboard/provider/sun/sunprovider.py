@@ -4,7 +4,7 @@ from astral import LocationInfo
 from astral.sun import sun
 
 from dashboard.provider.basedataprovider import BaseDataProvider
-from dashboard.provider.sun.model.sundata import SunData
+from dashboard.provider.sun.sundata import SunData
 
 
 class SunProvider(BaseDataProvider):

@@ -2,8 +2,8 @@ import os
 
 from dotenv import load_dotenv
 
-from dashboard.provider.alert.brightsky import Brightsky
-from dashboard.provider.alert.model.alertdata import AlertData
+from dashboard.provider.alert.brightskyalertprovider import BrightskyAlertProvider
+from dashboard.provider.alert.alertdata import AlertData
 from dashboard.utils.files import write_json
 from dashboard.utils.utils import configure_logging, configure_locale
 
@@ -24,7 +24,7 @@ def load_alert() -> AlertData:
 
     match alert_provider_name:
         case "brightsky":
-            alert_provider = Brightsky()
+            alert_provider = BrightskyAlertProvider()
         case _: raise Exception(f"Alert provider {alert_provider_name} not supported")
 
     alert_data = alert_provider.load()

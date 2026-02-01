@@ -2,11 +2,11 @@ from datetime import datetime
 
 from dashboard.provider.weather.baseweatherprovider import BaseWeatherProvider
 from dashboard.utils.utils import fetch_json
-from dashboard.provider.weather.model.weatherdata import WeatherData
-from dashboard.provider.weather.model.weathericon import WeatherIcon
+from dashboard.provider.weather.weatherdata import WeatherData
+from dashboard.provider.weather.weathericon import WeatherIcon
 
 
-class Brightsky(BaseWeatherProvider):
+class BrightskyWeatherProvider(BaseWeatherProvider):
 
     BASE_URL = "https://api.brightsky.dev/weather?lat={}&lon={}&date={}&tz={}"
 
@@ -31,7 +31,7 @@ class Brightsky(BaseWeatherProvider):
     def load(self) -> WeatherData:
         url = self.get_url()
         json = fetch_json(url)
-        return Brightsky.to_weather_data(json)
+        return BrightskyWeatherProvider.to_weather_data(json)
 
     def get_url(self) -> str:
         today = datetime.now().strftime("%Y-%m-%d")
@@ -49,7 +49,7 @@ class Brightsky(BaseWeatherProvider):
         temp_min = min(temperatures)
         temp_max = max(temperatures)
 
-        icon = Brightsky.get_icon(weather_day)
+        icon = BrightskyWeatherProvider.get_icon(weather_day)
 
         return WeatherData(temp_min=temp_min, temp_max=temp_max, icon=icon)
 
@@ -63,4 +63,4 @@ class Brightsky(BaseWeatherProvider):
 
         icon_str = weather_noon.get("icon", None) if weather_noon else None
 
-        return Brightsky.ICON_MAPPING.get(icon_str, WeatherIcon.NONE)
+        return BrightskyWeatherProvider.ICON_MAPPING.get(icon_str, WeatherIcon.NONE)

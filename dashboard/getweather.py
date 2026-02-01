@@ -2,8 +2,8 @@ import os
 
 from dotenv import load_dotenv
 
-from dashboard.provider.weather.brightsky import Brightsky
-from dashboard.provider.weather.model.weatherdata import WeatherData
+from dashboard.provider.weather.brightskyweatherprovider import BrightskyWeatherProvider
+from dashboard.provider.weather.weatherdata import WeatherData
 from dashboard.utils.files import write_json
 from dashboard.utils.utils import configure_logging, configure_locale
 
@@ -24,7 +24,7 @@ def load_weather() -> WeatherData:
 
     match weather_provider_name:
         case "brightsky":
-            weather_provider = Brightsky()
+            weather_provider = BrightskyWeatherProvider()
         case _: raise Exception(f"Weather provider {weather_provider_name} not supported")
 
     weather_data = weather_provider.load()

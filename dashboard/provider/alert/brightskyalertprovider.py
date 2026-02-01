@@ -1,9 +1,9 @@
 from dashboard.provider.alert.basealertprovider import BaseAlertProvider
-from dashboard.provider.alert.model.alertdata import AlertData
+from dashboard.provider.alert.alertdata import AlertData
 from dashboard.utils.utils import fetch_json
 
 
-class Brightsky(BaseAlertProvider):
+class BrightskyAlertProvider(BaseAlertProvider):
 
     BASE_URL = "https://api.brightsky.dev/alerts?lat={}&lon={}&tz={}"
 
@@ -13,7 +13,7 @@ class Brightsky(BaseAlertProvider):
     def load(self) -> AlertData:
         url = self.get_url()
         json = fetch_json(url)
-        return Brightsky.to_alert_data(json)
+        return BrightskyAlertProvider.to_alert_data(json)
 
     def get_url(self):
         url = self.BASE_URL.format(self.location_lat, self.location_lon, self.timezone)

@@ -1,7 +1,7 @@
 from abc import abstractmethod
 
 from dashboard.provider.basedataprovider import BaseDataProvider
-from dashboard.provider.weather.model.weatherdata import WeatherData
+from dashboard.provider.weather.weatherdata import WeatherData
 
 
 class BaseWeatherProvider(BaseDataProvider):

@@ -3,10 +3,10 @@ import json
 from dotenv import load_dotenv
 
 from dashboard import getalert, getweather, getdatetime, getsun
-from dashboard.provider.alert.model.alertdata import AlertData
-from dashboard.provider.datetime.model.datetimedata import DateTimeData
-from dashboard.provider.sun.model.sundata import SunData
-from dashboard.provider.weather.model.weatherdata import WeatherData
+from dashboard.provider.alert.alertdata import AlertData
+from dashboard.provider.datetime.datetimedata import DateTimeData
+from dashboard.provider.sun.sundata import SunData
+from dashboard.provider.weather.weatherdata import WeatherData
 from dashboard.utils.files import read_json, read_template, write_template
 from dashboard.utils.utils import configure_logging, configure_locale
 
