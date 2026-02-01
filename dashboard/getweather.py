@@ -31,7 +31,7 @@ def load_weather() -> WeatherData:
     if weather_data is None:
         raise Exception(f"No weather data found for provider {weather_provider_name}")
 
-    return weather_provider.load()
+    return weather_data
 
 if __name__ == "__main__":
     main()
