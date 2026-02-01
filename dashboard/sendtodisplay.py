@@ -71,12 +71,8 @@ def send_to_display(image: Image.Image):
 
         logging.info("Display updated successfully")
 
-    except (ImportError, OSError):
-        # Expected when running on non-Raspberry Pi systems
-        logging.warning(
-            "Waveshare e-Paper library not available. "
-            "This is expected when running outside of Raspberry Pi."
-        )
+    except (ImportError, OSError) as e:
+        logging.warning(f"Waveshare e-Paper library not available: {e}")
         logging.info(f"Image ready to display: {image.size} pixels, mode={image.mode}")
 
     except Exception as e:
