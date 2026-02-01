@@ -5,7 +5,7 @@ from abc import ABC
 class BaseDataProvider(ABC):
 
     location_lat: float
-    location_long: float
+    location_lon: float
     timezone: str
 
     def __init__(self):
