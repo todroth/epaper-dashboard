@@ -5,13 +5,14 @@ from dotenv import load_dotenv
 from dashboard.provider.weather.brightsky import Brightsky
 from dashboard.provider.weather.model.weatherdata import WeatherData
 from dashboard.utils.files import write_json
-from dashboard.utils.utils import configure_logging
+from dashboard.utils.utils import configure_logging, configure_locale
 
 DATA_FILE_NAME = "weather.json"
 
 def main():
     load_dotenv()
     configure_logging()
+    configure_locale()
     weather_data = load_weather()
     write_json(weather_data, DATA_FILE_NAME)
     print(weather_data)

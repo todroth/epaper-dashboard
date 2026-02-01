@@ -5,13 +5,14 @@ from dotenv import load_dotenv
 from dashboard.provider.alert.brightsky import Brightsky
 from dashboard.provider.alert.model.alertdata import AlertData
 from dashboard.utils.files import write_json
-from dashboard.utils.utils import configure_logging
+from dashboard.utils.utils import configure_logging, configure_locale
 
 DATA_FILE_NAME = "alert.json"
 
 def main():
     load_dotenv()
     configure_logging()
+    configure_locale()
     alert_data = load_alert()
     write_json(alert_data, DATA_FILE_NAME)
     print(alert_data)

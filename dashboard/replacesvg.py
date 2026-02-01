@@ -2,21 +2,23 @@ import json
 
 from dotenv import load_dotenv
 
-import dashboard.getalert
-import dashboard.getweather
+from dashboard import getalert, getweather, getdatetime
 from dashboard.provider.alert.model.alertdata import AlertData
+from dashboard.provider.datetime.model.datetimedata import DateTimeData
 from dashboard.provider.weather.model.weatherdata import WeatherData
 from dashboard.utils.files import read_json, read_template, write_template
-from dashboard.utils.utils import configure_logging
+from dashboard.utils.utils import configure_logging, configure_locale
 
 
 def main():
     load_dotenv()
     configure_logging()
+    configure_locale()
 
     values = (
-            read_json(dashboard.getweather.DATA_FILE_NAME, WeatherData).to_dict()
-            | read_json(dashboard.getalert.DATA_FILE_NAME, AlertData).to_dict()
+            read_json(getweather.DATA_FILE_NAME, WeatherData).to_dict()
+            | read_json(getalert.DATA_FILE_NAME, AlertData).to_dict()
+            | read_json(getdatetime.DATA_FILE_NAME, DateTimeData).to_dict()
     )
 
     template = read_template()

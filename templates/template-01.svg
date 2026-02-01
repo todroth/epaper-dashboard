@@ -38,7 +38,7 @@
     </text>
 
     <text id="textday" x="600" y="135" style="text-anchor:middle;font-weight:600;font-size:47px;font-family:sans-serif">DAY_NAME</text>
-    <text id="textdate" x="600" y="190" style="text-anchor:middle;font-size:40px;font-family:sans-serif">DAY_ONE</text>
+    <text id="textdate" x="600" y="190" style="text-anchor:middle;font-size:40px;font-family:sans-serif">DATE_STR</text>
 
     <!-- Sunrise/Sunset icons -->
     <g id="sunriseicon" transform="translate(100, 85) scale(1.3)">
