@@ -72,11 +72,12 @@ def send_to_display(image: Image.Image):
         logging.info("Display updated successfully")
 
     except (ImportError, OSError) as e:
-        logging.warning(f"Waveshare e-Paper library not available: {e}")
-        logging.info(f"Image ready to display: {image.size} pixels, mode={image.mode}")
+        logging.error(f"Failed to send to display: {e}")
+        raise
 
     except Exception as e:
         logging.error(f"Error sending to display: {e}", exc_info=True)
+        raise
 
 
 if __name__ == "__main__":
