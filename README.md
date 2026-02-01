@@ -120,12 +120,12 @@ The display will update after 15-20 seconds. The script automatically activates 
 
 #### 6. Automate Updates (Optional)
 
-Schedule with cron (updates every 30 minutes):
+Schedule with cron (updates daily at 3 AM):
 
 ```bash
 crontab -e
 # Add this line:
-# */30 * * * * /home/pi/epaper-dashboard/run.sh >> /home/pi/dashboard.log 2>&1
+# 0 3 * * * /home/pi/epaper-dashboard/run.sh >> /home/pi/dashboard.log 2>&1
 ```
 
 ---
