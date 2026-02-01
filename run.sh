@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# Activate virtual environment
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/venv/bin/activate"
+
 echo "Loading weather data..."
 if python3 -m dashboard.getweather; then
   echo "✅"

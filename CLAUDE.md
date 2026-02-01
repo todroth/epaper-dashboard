@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is an e-paper dashboard application for Raspberry Pi, built with Python 3.12. The project uses SVG templates with token replacement to render content, which is then converted and sent to a Waveshare 7.5inch e-Paper display (V2).
+This is an e-paper dashboard application for Raspberry Pi, built for Python ≥3.12. The project uses SVG templates with token replacement to render content, which is then converted and sent to a Waveshare 7.5inch e-Paper display (V2). Designed for Raspberry Pi OS Trixie (Python 3.13).
 
 ## Running the Application
 
@@ -120,14 +120,14 @@ All file I/O uses pathlib.Path and handles dataclass/enum serialization automati
 
 - **Raspberry Pi Zero W** (or any Raspberry Pi model)
 - **Waveshare 7.5inch e-Paper display V2** (800x480 resolution)
-- Python 3.11 recommended (Python 3.12 requires compiling Pillow from source on ARM)
+- **Raspberry Pi OS Trixie (Debian 13)** with Python 3.13
 
-Note: piwheels (Raspberry Pi wheel repository) provides pre-compiled Pillow wheels for Python 3.9, 3.11, and 3.13, but NOT 3.12. Using Python 3.11 avoids long compilation times on slow ARM CPUs.
+Note: This project requires Python ≥3.12. Raspberry Pi OS Bookworm (Debian 12) ships with Python 3.11 and is not compatible. Trixie ships with Python 3.13 and has full piwheels support for all dependencies including Pillow.
 
 ## Development Environment
 
-- Python 3.12 on development machine (macOS/Linux)
-- Python 3.11 recommended on Raspberry Pi
+- Python 3.12+ on development machine (macOS/Linux/Windows)
+- Python 3.13 on Raspberry Pi (via Trixie)
 - Dependencies managed via `pyproject.toml`:
   - `requests` - HTTP requests for API calls
   - `python-dotenv` - Environment configuration
