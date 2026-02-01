@@ -9,6 +9,7 @@ dependencies = [
     "astral>=3.2",
     "cairosvg>=2.7.0",
     "pillow>=10.0.0",
+    "spidev>=3.6",
 ]
 
 [build-system]
