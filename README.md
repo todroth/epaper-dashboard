@@ -102,24 +102,12 @@ The display will update after 15-20 seconds. The script automatically activates 
 
 #### 5. Automate Updates (Optional)
 
-Create update script:
-
-```bash
-cat > ~/update-dashboard.sh << 'EOF'
-#!/bin/bash
-cd /home/pi/epaper-dashboard
-source venv/bin/activate
-./run.sh
-EOF
-
-chmod +x ~/update-dashboard.sh
-```
-
-Schedule with cron:
+Schedule with cron (updates every 30 minutes):
 
 ```bash
 crontab -e
-# Add: */30 * * * * ~/update-dashboard.sh >> ~/dashboard.log 2>&1
+# Add this line:
+# */30 * * * * /home/pi/epaper-dashboard/run.sh >> /home/pi/dashboard.log 2>&1
 ```
 
 ---
