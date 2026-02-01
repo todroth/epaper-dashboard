@@ -1,3 +1,5 @@
+import json
+
 from dotenv import load_dotenv
 
 import dashboard.getweather
@@ -16,7 +18,7 @@ def main():
     updated_template = replace_placeholder(template, values)
     write_template(updated_template)
 
-    print(values)
+    print(json.dumps(values, indent=2))
 
 def replace_placeholder(template: str, values: dict) -> str:
     for placeholder, replacement in values.items():
