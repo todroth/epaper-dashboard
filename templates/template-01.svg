@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="480" viewBox="0 0 800 480">
     <rect width="800" height="480" fill="white" />
 
-    <text id="alertmessage" x="410" y="35" style="font-weight:bold;font-size:30px;font-family:'Nimbus Mono PS',monospace;text-anchor:middle">ALERT_MESSAGE</text>
+    <text id="alertmessage" x="410" y="35" style="font-weight:bold;font-size:30px;font-family:'Nimbus Mono PS',monospace;text-anchor:middle">ALERT_HEADLINE</text>
 
     <g id="weathericon" transform="translate(150, 280) scale(0.1) translate(-480, 480)">
         WEATHER_ICON

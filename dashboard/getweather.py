@@ -26,6 +26,10 @@ def load_weather() -> WeatherData:
             weather_provider = Brightsky()
         case _: raise Exception(f"Weather provider {weather_provider_name} not supported")
 
+    weather_data = weather_provider.load()
+    if weather_data is None:
+        raise Exception(f"No weather data found for provider {weather_provider_name}")
+
     return weather_provider.load()
 
 if __name__ == "__main__":
