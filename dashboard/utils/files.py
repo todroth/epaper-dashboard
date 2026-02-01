@@ -10,6 +10,7 @@ T = TypeVar('T')
 DATA_DIRECTORY = "data"
 TEMPLATE_DIRECTORY="templates"
 ICON_DIRECTORY="assets/icons"
+DISPLAY_IMAGE_SVG_NAME= "image.svg"
 
 def read_icon_path(file_name: str) -> str:
     icon_path = Path(ICON_DIRECTORY) / file_name
@@ -49,7 +50,7 @@ def write_template(template: str):
     data_dir = Path(DATA_DIRECTORY)
     data_dir.mkdir(exist_ok=True)
 
-    file_path = data_dir / os.getenv("TEMPLATE")
+    file_path = data_dir / DISPLAY_IMAGE_SVG_NAME
     with open(file_path, "w") as file:
         file.write(template)
 
