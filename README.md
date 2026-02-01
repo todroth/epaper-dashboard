@@ -52,9 +52,9 @@ sudo apt update && sudo apt full-upgrade -y
 
 # Install system dependencies for image processing
 sudo apt install -y python3 python3-pip python3-venv git \
-    libjpeg-dev zlib1g-dev libfreetype6-dev liblcms2-dev \
+    libjpeg-dev zlib1g-dev libfreetype-dev liblcms2-dev \
     libopenjp2-7 libtiff6 libcairo2 libpango-1.0-0 \
-    libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libffi-dev \
+    libpangocairo-1.0-0 libgdk-pixbuf-2.0-0 libffi-dev \
     shared-mime-info
 
 # Enable SPI interface (required for e-Paper display)
