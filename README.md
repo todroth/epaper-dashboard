@@ -77,7 +77,25 @@ pip install -e .
 
 **Note:** Installation takes 5-10 minutes on Pi Zero W.
 
-#### 3. Configuration
+#### 3. Configure Locale (if using non-English)
+
+```bash
+# Configure locales interactively
+sudo dpkg-reconfigure locales
+
+# In the menu:
+# 1. Use Space to select your locale (e.g., de_DE.UTF-8 for German)
+# 2. Press Enter to continue
+# 3. Select default locale (or choose None)
+# 4. Wait for generation to complete
+
+# Verify it's available
+locale -a
+```
+
+If you don't need specific locale formatting, `C.UTF-8` works universally.
+
+#### 4. Configuration
 
 Create and edit `.env` file:
 
@@ -89,10 +107,10 @@ nano .env
 Configure your location and settings:
 - `LOCATION_LAT` / `LOCATION_LON` - Your coordinates (find on Google Maps)
 - `TIMEZONE` - e.g., `Europe/Berlin` (check `timedatectl list-timezones`)
-- `LOCALE` - e.g., `de_DE.UTF-8` (check `locale -a`)
+- `LOCALE` - e.g., `de_DE.UTF-8` (must be generated first, check with `locale -a`)
 - `TEMPLATE` - SVG template filename from `templates/`
 
-#### 4. Run the Dashboard
+#### 5. Run the Dashboard
 
 ```bash
 ./run.sh
@@ -100,7 +118,7 @@ Configure your location and settings:
 
 The display will update after 15-20 seconds. The script automatically activates the venv.
 
-#### 5. Automate Updates (Optional)
+#### 6. Automate Updates (Optional)
 
 Schedule with cron (updates every 30 minutes):
 
