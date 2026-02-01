@@ -4,94 +4,170 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is an e-paper dashboard application built for Python 3.12. The project uses SVG templates with token replacement to render content for display on e-paper devices.
+This is an e-paper dashboard application for Raspberry Pi, built with Python 3.12. The project uses SVG templates with token replacement to render content, which is then converted and sent to a Waveshare 7.5inch e-Paper display (V2).
 
 ## Running the Application
 
 ```bash
-# Run the main data loading pipeline
+# Install dependencies (first time only)
+pip install -e .
+
+# Initialize git submodules (first time only)
+git submodule update --init --recursive
+
+# Run the complete pipeline (loads data, renders template, sends to display)
 ./run.sh
 
-# Run individual modules directly
-python3 -m src.weather.getweather
+# Run individual modules
+python3 -m dashboard.getweather    # Load weather data
+python3 -m dashboard.getalert      # Load alert data
+python3 -m dashboard.getsun        # Load sunrise/sunset times
+python3 -m dashboard.getdatetime   # Load current date/time
+python3 -m dashboard.replacesvg    # Replace SVG template tokens
+python3 -m dashboard.sendtodisplay # Send to e-paper display
 ```
 
-The `run.sh` script orchestrates loading data from multiple sources (weather, alerts, calendar, sun, time). Currently only weather is implemented.
+The `run.sh` script orchestrates the complete pipeline sequentially.
 
 ## Project Structure
 
-- `src/` - Main application source code
-  - `src/weather/` - Weather data loading and providers
-  - `src/utils.py` - Shared utilities (logging, HTTP requests)
+- `dashboard/` - Main application source code (NOT `src/`)
+  - `dashboard/provider/` - Data provider plugins (weather, alert, sun, datetime)
+  - `dashboard/utils/` - Shared utilities (logging, HTTP, file I/O)
+  - `dashboard/get*.py` - Entry point modules that load data from providers
+  - `dashboard/replacesvg.py` - Token replacement in SVG templates
+  - `dashboard/sendtodisplay.py` - SVG to bitmap conversion and display output
 - `lib/e-Paper/` - Waveshare e-Paper library (git submodule)
-  - Python drivers: `lib/e-Paper/RaspberryPi_JetsonNano/python/lib/`
-  - Examples: `lib/e-Paper/RaspberryPi_JetsonNano/python/examples/`
-- `templates/` - SVG templates with token placeholders for dynamic content
-- `assets/icons/` - Icon resources
+  - Display driver: `lib/e-Paper/RaspberryPi_JetsonNano/python/lib/waveshare_epd/epd7in5_V2.py`
+- `templates/` - SVG templates with token placeholders
+- `assets/icons/` - SVG icon resources
+- `data/` - Generated output directory (gitignored)
+  - `data/*.json` - Cached data from providers
+  - `data/image.svg` - Final rendered SVG before display conversion
 - `.env` - Environment configuration (copy from `.env.example`)
 
 ## Architecture
 
-### Weather Provider Plugin System
+### Data Pipeline Flow
 
-The weather module uses a provider pattern (`src/weather/provider/`) to support multiple weather APIs:
+The application follows a strict sequential pipeline:
 
-- **BaseProvider** (`baseprovider.py`) - Abstract base class that all providers must inherit from. Defines the `load() -> WeatherData` contract and handles location configuration from environment variables.
-- **Provider implementations** (e.g., `brightsky.py`) - Concrete providers that fetch from specific weather APIs and map their response formats to the common `WeatherData` dataclass.
-- **Configuration** - Provider selection is done via `WEATHER_PROVIDER` environment variable (currently supports `brightsky`).
+1. **Data Loading** - Each provider loads data and saves to `data/*.json`
+   - Weather → `data/weather.json`
+   - Alerts → `data/alert.json`
+   - Sun times → `data/sun.json`
+   - DateTime → `data/datetime.json`
 
-To add a new weather provider:
-1. Create a new class inheriting from `BaseProvider` in `src/weather/provider/`
-2. Implement the `load()` method to return `WeatherData`
-3. Map the provider's icon format to `WeatherIcon` enum values
-4. Add the provider name to the match statement in `getweather.py:load_weather()`
+2. **Template Rendering** - `replacesvg.py` merges all JSON data and performs token replacement
+   - Loads template from `templates/$TEMPLATE`
+   - Reads all JSON files and merges their `to_dict()` outputs
+   - Replaces uppercase tokens (e.g., `TEMP_MIN`, `SUNRISE_TIME`) with values
+   - Writes final SVG to `data/image.svg`
+
+3. **Display Output** - `sendtodisplay.py` converts and sends to e-paper
+   - SVG → PNG (in-memory using CairoSVG)
+   - PNG → 1-bit bitmap (using Pillow with Floyd-Steinberg dithering)
+   - Sends to epd7in5_V2 display (800x480 pixels)
+
+### Provider Plugin System
+
+All data providers inherit from `BaseDataProvider` which provides location and timezone configuration from environment variables. Each provider type has its own base class:
+
+- **BaseWeatherProvider** - Weather data providers (currently: Brightsky)
+- **BaseAlertProvider** - Weather alert providers (currently: Brightsky)
+- **DateTimeProvider** - System datetime (no external API)
+- **SunProvider** - Sunrise/sunset calculations using Astral library
+
+To add a new provider:
+1. Create a class inheriting from the appropriate base provider in `dashboard/provider/<type>/`
+2. Implement the `load()` method returning the corresponding data model
+3. Add provider selection logic in the relevant `dashboard/get*.py` module
 
 ### Data Models
 
-- **WeatherData** (`weatherdata.py`) - Common dataclass for weather information (temp_min, temp_max, icon)
-- **WeatherIcon** (`weathericon.py`) - Enum representing normalized weather conditions across providers
+All data models are dataclasses with a `to_dict()` method that returns token→value mappings:
+
+- **WeatherData** - `temp_min`, `temp_max`, `icon` (WeatherIcon enum)
+- **AlertData** - `headline`, `description`, `instruction`
+- **SunData** - `sunrise_time`, `sunset_time` (formatted strings)
+- **DateTimeData** - Various date/time fields in localized format
+
+The `to_dict()` method converts field names to uppercase tokens (e.g., `temp_min` → `TEMP_MIN`) and formats values as strings suitable for SVG token replacement.
 
 ### Configuration
 
 Environment variables in `.env`:
-- `DISPLAY_WIDTH`, `DISPLAY_HEIGHT` - Display resolution (default 800x480)
-- `LOCATION_LAT`, `LOCATION_LON` - Geographic coordinates for weather
-- `WEATHER_PROVIDER` - Which weather API to use (currently only "brightsky")
+- `DISPLAY_WIDTH=800`, `DISPLAY_HEIGHT=480` - Display resolution
+- `LOCATION_LAT`, `LOCATION_LON` - Geographic coordinates
+- `TIMEZONE` - Timezone for datetime/sun calculations (e.g., `Europe/Berlin`)
+- `LOCALE` - Locale for formatting (e.g., `de_DE.UTF-8`)
+- `WEATHER_PROVIDER` - Provider name (currently only `brightsky`)
+- `ALERT_PROVIDER` - Provider name (currently only `brightsky`)
+- `TEMPLATE` - SVG template filename (e.g., `template-01.svg`)
 
-## Template System
+### File Utilities (`dashboard/utils/files.py`)
 
-The dashboard uses SVG templates with token-based placeholders. See `templates/example.svg` for the pattern:
+Key functions:
+- `write_json(obj, filename)` - Serialize dataclass to JSON in `data/` directory
+- `read_json(filename, cls)` - Deserialize JSON to dataclass with enum support
+- `read_template()` - Load SVG from `templates/$TEMPLATE`
+- `write_template(content)` - Write final SVG to `data/image.svg`
+- `read_icon_path(filename)` - Extract SVG content from icon files
 
-- Tokens are uppercase placeholder strings (e.g., `TIME_NOW`, `TEMP_NOW`, `WEATHER_DESCRIPTION`)
-- Templates define the layout at 800x480 resolution (common e-paper display size)
-- Token replacement happens before rendering to the e-paper display
+All file I/O uses pathlib.Path and handles dataclass/enum serialization automatically.
 
-When implementing template rendering, the pattern is:
-1. Load SVG template
-2. Replace tokens with actual data
-3. Render to bitmap format for e-paper
+## Hardware Requirements
 
-## Output Files
+- **Raspberry Pi Zero W** (or any Raspberry Pi model)
+- **Waveshare 7.5inch e-Paper display V2** (800x480 resolution)
+- Python 3.11 recommended (Python 3.12 requires compiling Pillow from source on ARM)
 
-The `.gitignore` specifies these output patterns that are generated but not committed:
-- `screen-output.*` - Main display output files
-- `output.png`, `output.bmp` - Rendered images
-- `cache_*.json`, `cache_*.pickle` - Cached data from APIs
-- `token.pickle`, `outlooktoken.bin` - OAuth tokens
-
-## E-Paper Hardware Library
-
-The project uses the official Waveshare e-Paper library (added as git submodule):
-- Repository: https://github.com/waveshareteam/e-Paper
-- Location: `lib/e-Paper/`
-- To initialize after cloning: `git submodule update --init --recursive`
-
-The Python drivers support various Waveshare e-paper display models. Import drivers from the submodule path when implementing display functionality.
+Note: piwheels (Raspberry Pi wheel repository) provides pre-compiled Pillow wheels for Python 3.9, 3.11, and 3.13, but NOT 3.12. Using Python 3.11 avoids long compilation times on slow ARM CPUs.
 
 ## Development Environment
 
-- Python 3.12+ required
-- Uses virtual environment (venv)
-- Dependencies managed via `pyproject.toml`
-- Git submodules must be initialized after cloning
-- Logging is configured via `configure_logging()` from `src/utils.py`
+- Python 3.12 on development machine (macOS/Linux)
+- Python 3.11 recommended on Raspberry Pi
+- Dependencies managed via `pyproject.toml`:
+  - `requests` - HTTP requests for API calls
+  - `python-dotenv` - Environment configuration
+  - `astral` - Sunrise/sunset calculations
+  - `cairosvg` - SVG to PNG conversion
+  - `pillow` - Image manipulation and bitmap conversion
+- Git submodule for Waveshare e-Paper library
+- Logging configured via `configure_logging()` from `dashboard/utils/utils.py`
+
+The `sendtodisplay.py` module gracefully handles running on development machines by catching ImportError/OSError when the Waveshare library isn't available, allowing SVG conversion to be tested without hardware.
+
+## Adding New Data Providers
+
+Example: Adding a new weather provider called "openweather"
+
+1. Create `dashboard/provider/weather/openweatherprovider.py`:
+```python
+from dashboard.provider.weather.baseweatherprovider import BaseWeatherProvider
+from dashboard.provider.weather.weatherdata import WeatherData
+from dashboard.utils.utils import fetch_json
+
+class OpenWeatherProvider(BaseWeatherProvider):
+    def load(self) -> WeatherData:
+        # Fetch data using self.location_lat, self.location_lon, self.timezone
+        # Map response to WeatherData with WeatherIcon enum
+        pass
+```
+
+2. Update `dashboard/getweather.py`:
+```python
+match weather_provider_name:
+    case "brightsky":
+        weather_provider = BrightskyWeatherProvider()
+    case "openweather":
+        weather_provider = OpenWeatherProvider()
+    case _: raise Exception(f"Weather provider {weather_provider_name} not supported")
+```
+
+3. Add to `.env.example`:
+```
+# possible values: brightsky, openweather
+WEATHER_PROVIDER=brightsky
+```
