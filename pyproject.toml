@@ -1,40 +1,13 @@
 [project]
 name = "epaper-dashboard"
-version = "2.0.0"
-description = "E-Paper Dashboard for Raspberry Pi"
-requires-python = ">=3.12,<3.14"
+version = "0.1.0"
+description = "E-paper dashboard application"
+requires-python = ">=3.12"
 dependencies = [
-    "Pillow>=11.0.0",
-    "requests>=2.32.0",
-    "python-dateutil>=2.9.0",
-    "pytz>=2025.2",
-    "babel>=2.14.0",
-    "astral>=3.2",
-]
-
-[project.optional-dependencies]
-# Only needed on Raspberry Pi
-hardware = [
-    "spidev>=3.6",
-    "gpiozero>=2.0.1",
-]
-
-# Choose one SVG renderer
-svg-cairosvg = [
-    "cairosvg>=2.7.1",
-]
-svg-svglib = [
-    "svglib>=1.5.1",
-    "reportlab>=4.0.0",
-]
-
-# Calendar providers
-calendar = [
-    "icalendar>=6.0.0",
-    "google-auth>=2.30.0",
-    "google-api-python-client>=2.140.0",
+    "requests>=2.32.5",
+    "python-dotenv>=1.2.1",
 ]
 
 [build-system]
-requires = ["setuptools>=68.0"]
+requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
